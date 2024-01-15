@@ -17,7 +17,7 @@ ALMADefaultCharacter::ALMADefaultCharacter()
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
-	SpringArmComponent->SetUsingAbsoluteRotation(true);
+	SpringArmComponent->SetUsingAbsoluteRotation(true);	
 	SpringArmComponent->TargetArmLength = ArmLength;
 	SpringArmComponent->SetRelativeRotation(FRotator(YRotation, 0.0f, 0.0f));
 	SpringArmComponent->bDoCollisionTest = false;
@@ -42,6 +42,15 @@ void ALMADefaultCharacter::BeginPlay()
 	{
 		CurrentCursor = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), CursorMaterial, CursorSize, FVector(0));
 	}
+	if (ArmLength < MinArmLength)
+	{
+		ArmLength = MinArmLength;
+	}
+	else if (ArmLength > MaxArmLength)
+	{
+		ArmLength = MaxArmLength;
+	}
+	SpringArmComponent->TargetArmLength = ArmLength;
 }
 
 // Called every frame
@@ -70,6 +79,8 @@ void ALMADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAxis("MoveForward", this, &ALMADefaultCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALMADefaultCharacter::MoveRight);
 
+	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &ALMADefaultCharacter::ZoomIn);
+	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &ALMADefaultCharacter::ZoomOut);
 }
 
 void ALMADefaultCharacter::MoveForward(float Value) 
@@ -80,5 +91,25 @@ void ALMADefaultCharacter::MoveForward(float Value)
 void ALMADefaultCharacter::MoveRight(float Value) 
 {
 	AddMovementInput(GetActorRightVector(), Value);
+}
+
+void ALMADefaultCharacter::ZoomIn() 
+{
+	ArmLength -= StepArmLength;
+	if (ArmLength < MinArmLength)
+	{
+		ArmLength = MinArmLength;
+	}	
+	SpringArmComponent->TargetArmLength = ArmLength;
+}
+
+void ALMADefaultCharacter::ZoomOut() 
+{	
+	ArmLength += StepArmLength;
+	if (ArmLength > MaxArmLength)
+	{
+		ArmLength = MaxArmLength;
+	}	
+	SpringArmComponent->TargetArmLength = ArmLength;
 }
 
