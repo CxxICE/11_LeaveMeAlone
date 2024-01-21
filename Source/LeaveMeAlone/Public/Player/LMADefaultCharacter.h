@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/LMAHealthComponent.h"
 #include "LMADefaultCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
+class ULMAHealthComponent;
+class UAnimMontage;
 
 UCLASS()
 class LEAVEMEALONE_API ALMADefaultCharacter : public ACharacter
@@ -17,6 +20,9 @@ class LEAVEMEALONE_API ALMADefaultCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ALMADefaultCharacter();
+
+	UFUNCTION()
+	ULMAHealthComponent* GetHealthComponent() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,12 +48,30 @@ protected:
 	float StepArmLength = 70.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom",
-		meta = (ClampMin = "500", UIMin = "500", ClampMax = "2000", UIMax = "2000"))
-	float MaxArmLength = 1400.0f;
+		meta = (ClampMin = "500", UIMin = "500", ClampMax = "3000", UIMax = "3000"))
+	float MaxArmLength = 2000.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom", 
 		meta = (ClampMin = "300", UIMin = "300", ClampMax = "500", UIMax = "500"))
 	float MinArmLength = 400.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Health")
+	ULMAHealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina")
+	float MaxStamina = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina", meta = (ToolTip = "Decrease per StaminaTimerRate"))
+	float IncreaseStaminaSpeed = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina", meta = (ToolTip = "Increase per StaminaTimerRate"))
+	float DecreaseStaminaSpeed = 2.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Stamina")
+	float StaminaTimerRate = 0.05f;
 
 public:
 	// Called every frame
@@ -61,9 +85,24 @@ private:
 	float ArmLength = 1400.0f; // отвечает за длину штатива.
 	float FOV = 55.0f;		   // отвечает за поле зрения камеры.
 
+	float Stamina = 100.0f;
+	bool SprintState = false;
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
 	void ZoomIn();
 	void ZoomOut();
+
+	void OnDeath();
+	void OnHealthChanged(float NewHealth);
+	void RotationPlayerOnCursor();
+
+	void SprintActivate();
+	void SprintDeActivate();
+
+	void CalculateStamina();	
+	bool StaminaIsFull();
+	bool StaminaIsEmpty();
+	FTimerHandle StaminaTimerHandle;
 };
