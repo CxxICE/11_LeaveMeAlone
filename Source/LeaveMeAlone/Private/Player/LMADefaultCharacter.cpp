@@ -44,6 +44,20 @@ ULMAHealthComponent* ALMADefaultCharacter::GetHealthComponent() const
 	
 }
 
+void ALMADefaultCharacter::PauseCharacter() 
+{
+	WeaponComponent->StopLongFire();
+	if(SprintState)
+	{
+		SprintDeActivate();
+	}	
+}
+
+float ALMADefaultCharacter::GetStamina() const
+{
+	return Stamina;
+}
+
 // Called when the game starts or when spawned
 void ALMADefaultCharacter::BeginPlay()
 {
@@ -144,7 +158,7 @@ void ALMADefaultCharacter::OnDeath()
 
 void ALMADefaultCharacter::OnHealthChanged(float NewHealth) 
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), NewHealth));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), NewHealth));
 }
 
 void ALMADefaultCharacter::RotationPlayerOnCursor() 
@@ -169,12 +183,15 @@ void ALMADefaultCharacter::SprintActivate()
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	
 	GetWorldTimerManager().SetTimer(StaminaTimerHandle, this, &ALMADefaultCharacter::CalculateStamina, StaminaTimerRate, true);	
+
+	WeaponComponent->FireProhibition();
 }
 
 void ALMADefaultCharacter::SprintDeActivate() 
 {
 	SprintState = false;
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;	
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	WeaponComponent->FirePermission();
 }
 
 void ALMADefaultCharacter::CalculateStamina()
@@ -195,7 +212,7 @@ void ALMADefaultCharacter::CalculateStamina()
 			GetWorldTimerManager().ClearTimer(StaminaTimerHandle);
 		}
 	}	
-	GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Blue, FString::Printf(TEXT("Stamina = %f"), Stamina));
+	//GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Blue, FString::Printf(TEXT("Stamina = %f"), Stamina));
 }
 
 bool ALMADefaultCharacter::StaminaIsFull()

@@ -2,6 +2,8 @@
 
 
 #include "Weapons/LMABaseWeapon.h"
+#include "Player/LMADefaultCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeapon, All, All);
 
@@ -57,6 +59,11 @@ bool ALMABaseWeapon::IsClipAvailable()
 	return CurrentAmmoWeapon.Clips > 0 || AmmoWeapon.Infinite;
 }
 
+FAmmoWeapon ALMABaseWeapon::GetCurrentAmmoWeapon() const
+{
+	return CurrentAmmoWeapon;	
+}
+
 // Called when the game starts or when spawned
 void ALMABaseWeapon::BeginPlay()
 {
@@ -66,6 +73,15 @@ void ALMABaseWeapon::BeginPlay()
 
 void ALMABaseWeapon::Shoot() 
 {
+
+	if (IsValid(FireMontage))
+	{
+		auto Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);		
+		if (IsValid(Player))
+		{
+			Player->PlayAnimMontage(FireMontage);
+		}
+	}
 	const FTransform SocketTransform = WeaponComponent->GetSocketTransform("Muzzle");
 	const FVector TraceStart = SocketTransform.GetLocation();
 	const FVector ShootDirection = SocketTransform.GetRotation().GetForwardVector();
@@ -86,7 +102,7 @@ void ALMABaseWeapon::Shoot()
 void ALMABaseWeapon::DecrementBullets() 
 {
 	CurrentAmmoWeapon.Bullets--;
-	UE_LOG(LogWeapon, Display, TEXT("Bullets = %s"), *FString::FromInt(CurrentAmmoWeapon.Bullets));
+	//UE_LOG(LogWeapon, Display, TEXT("Bullets = %s"), *FString::FromInt(CurrentAmmoWeapon.Bullets));
 
 	if (IsCurrentClipEmpty())
 	{

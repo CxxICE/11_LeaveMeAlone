@@ -21,6 +21,8 @@ public:
 	void StartLongFire();
 	void StopLongFire();
 	void ManualReload();
+	void FireProhibition();
+	void FirePermission();
 
 protected:
 	// Called when the game starts
@@ -30,7 +32,10 @@ protected:
 	TSubclassOf<ALMABaseWeapon> WeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* ReloadMontage;	
+	UAnimMontage* ReloadMontage;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetCurrentAmmoWeapon(FAmmoWeapon& AmmoWeapon) const;
 
 public:	
 	// Called every frame
@@ -43,6 +48,7 @@ private:
 
 	bool AnimReloading = false;
 	bool LongFireActivated = false;
+	bool FireProhibited = false;
 
 	void SpawnWeapon();
 

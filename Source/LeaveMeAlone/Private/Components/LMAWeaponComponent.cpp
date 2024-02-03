@@ -29,7 +29,7 @@ void ULMAWeaponComponent::BeginPlay()
 
 void ULMAWeaponComponent::Fire() 
 {
-	if (IsValid(Weapon) && !AnimReloading)
+	if (IsValid(Weapon) && !AnimReloading && !FireProhibited)
 	{
 		Weapon->Fire();
 	}
@@ -40,7 +40,8 @@ void ULMAWeaponComponent::StartLongFire()
 	if (IsValid(Weapon))
 	{
 		LongFireActivated = true;
-		if (!AnimReloading)
+				
+		if (!AnimReloading && !FireProhibited)
 		{
 			Weapon->StartLongFire();
 		}		
@@ -66,8 +67,7 @@ void ULMAWeaponComponent::Reload()
 			Weapon->StopLongFire();			
 		}
 		ACharacter* Character = Cast<ACharacter>(GetOwner());
-		Character->PlayAnimMontage(ReloadMontage);
-		Weapon->ChangeClip();		
+		Character->PlayAnimMontage(ReloadMontage);		
 	}	
 }
 
@@ -79,6 +79,34 @@ void ULMAWeaponComponent::AutoReload()
 void ULMAWeaponComponent::ManualReload() 
 {
 	Reload();
+}
+
+void ULMAWeaponComponent::FireProhibition() 
+{
+	FireProhibited = true;
+	if (LongFireActivated)
+	{
+		Weapon->StopLongFire();
+	}
+}
+
+void ULMAWeaponComponent::FirePermission() 
+{
+	FireProhibited = false;
+	if (LongFireActivated)
+	{
+		StartLongFire();
+	}
+}
+
+bool ULMAWeaponComponent::GetCurrentAmmoWeapon(FAmmoWeapon& AmmoWeapon) const
+{	
+	if (IsValid(Weapon))
+	{
+		AmmoWeapon = Weapon->GetCurrentAmmoWeapon();
+		return true;
+	}
+	return false;	
 }
 
 // Called every frame
@@ -127,9 +155,10 @@ void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* Skeleta
 	if (Character->GetMesh() == SkeletalMesh)
 	{
 		AnimReloading = false;
+		Weapon->ChangeClip();
 		if (LongFireActivated)
 		{
-			Weapon->StartLongFire();
+			StartLongFire();
 		}
 	}
 }

@@ -24,6 +24,13 @@ public:
 
 	UFUNCTION()
 	ULMAHealthComponent* GetHealthComponent() const;
+	
+	UFUNCTION(BlueprintCallable)
+	void PauseCharacter();
+
+	
+	UFUNCTION(BlueprintCallable)
+	float GetStamina() const;
 
 protected:
 	// Called when the game starts or when spawned

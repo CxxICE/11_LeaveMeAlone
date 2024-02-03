@@ -39,6 +39,8 @@ public:
 	bool IsCurrentClipFull();
 	bool IsClipAvailable();
 
+	FAmmoWeapon GetCurrentAmmoWeapon() const;
+
 	FOnClipEmpty OnClipEmpty;
 
 protected:
@@ -56,6 +58,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float FireTimerRate = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* FireMontage;
 
 	void Shoot();
 	void DecrementBullets();
