@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "LMABaseWeapon.generated.h"
 
+class USoundWave;
+class UNiagaraSystem;
+
 DECLARE_MULTICAST_DELEGATE(FOnClipEmpty)
 
 USTRUCT(BlueprintType)
@@ -55,6 +58,17 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FAmmoWeapon AmmoWeapon {30, 0, true};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	USoundWave* ShootWave;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	UNiagaraSystem* TraceEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	FString TraceName = "Tracer";
+
+	void SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float FireTimerRate = 0.1f;
