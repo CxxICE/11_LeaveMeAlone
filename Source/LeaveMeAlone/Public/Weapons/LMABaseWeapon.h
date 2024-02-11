@@ -68,7 +68,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FString TraceName = "Tracer";
 
-	void SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	UNiagaraSystem* FireHitEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	FString FireHitDirection = "FireContrDirection";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	UNiagaraSystem* FireEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float FireTimerRate = 0.1f;
@@ -79,6 +86,8 @@ protected:
 	void Shoot();
 	void DecrementBullets();
 	bool IsCurrentClipEmpty() const;
+	void SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd);
+	void SpawnFireHit(const FVector& HitVector, const FVector& ContrFireVector);
 
 public:	
 	// Called every frame

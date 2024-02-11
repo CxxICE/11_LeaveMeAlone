@@ -33,6 +33,7 @@ void ALMABaseWeapon::Fire()
 
 void ALMABaseWeapon::StartLongFire() 
 {
+	Fire();
 	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ALMABaseWeapon::Fire, FireTimerRate, true);
 }
 
@@ -85,6 +86,15 @@ void ALMABaseWeapon::SpawnTrace(const FVector& TraceStart, const FVector& TraceE
 	}
 }
 
+void ALMABaseWeapon::SpawnFireHit(const FVector& HitVector, const FVector& ContrFireVector)
+{
+	const auto TraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect, HitVector);
+	if (IsValid(TraceFX))
+	{
+		TraceFX->SetNiagaraVariableVec3(FireHitDirection, ContrFireVector);
+	}
+}
+
 void ALMABaseWeapon::Shoot()
 {
 
@@ -106,12 +116,16 @@ void ALMABaseWeapon::Shoot()
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
 	FVector TracerEnd = TraceEnd;
+	FVector ContrFire = TraceStart - TraceEnd;
 	if (HitResult.bBlockingHit)
 	{
 		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 5.0f, 24, FColor::Red, false, 1.0f);
 		TracerEnd = HitResult.ImpactPoint;
+		SpawnFireHit(TracerEnd, ContrFire);
 	}
-	SpawnTrace(TraceStart, TracerEnd);
+	const auto TraceFX1 = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffect, TraceStart);
+	SpawnTrace(TraceStart, TracerEnd);	
+	
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShootWave, TraceStart);
 
 	DecrementBullets();
