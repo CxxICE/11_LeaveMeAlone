@@ -49,8 +49,9 @@ bool ALMAHealthPickup::GivePickup(ALMADefaultCharacter* Character)
 	if (!IsValid(HealthComponent))
 	{
 		return false;
-	}		
+	}
 	return HealthComponent->AddHealth(HealthFromPickup);
+	
 }
 
 void ALMAHealthPickup::PickupWasTaken() 
