@@ -95,6 +95,18 @@ void ALMABaseWeapon::SpawnFireHit(const FVector& HitVector, const FVector& Contr
 	}
 }
 
+void ALMABaseWeapon::MakeDamage(const FHitResult& HitResult) 
+{
+	const auto Zombie = HitResult.GetActor();
+	if (!Zombie) return;
+	const auto Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Pawn) return;
+	const auto Controller = Pawn->GetController<APlayerController>();
+	if (!Controller) return;
+	
+	Zombie->TakeDamage(Damage, FDamageEvent(), Controller, this);
+}
+
 void ALMABaseWeapon::Shoot()
 {
 
@@ -120,6 +132,7 @@ void ALMABaseWeapon::Shoot()
 	if (HitResult.bBlockingHit)
 	{
 		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 5.0f, 24, FColor::Red, false, 1.0f);
+		MakeDamage(HitResult);
 		TracerEnd = HitResult.ImpactPoint;
 		SpawnFireHit(TracerEnd, ContrFire);
 	}

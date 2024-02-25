@@ -83,11 +83,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* FireMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	float Damage = 20;
+
 	void Shoot();
 	void DecrementBullets();
 	bool IsCurrentClipEmpty() const;
 	void SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd);
 	void SpawnFireHit(const FVector& HitVector, const FVector& ContrFireVector);
+	void MakeDamage(const FHitResult& HitResult);
 
 public:	
 	// Called every frame

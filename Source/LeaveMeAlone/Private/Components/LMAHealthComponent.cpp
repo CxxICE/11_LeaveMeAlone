@@ -18,6 +18,11 @@ float ULMAHealthComponent::GetHealth() const
 	return Health;
 }
 
+void ULMAHealthComponent::SetHealth(float NewHealth)
+{
+	Health = NewHealth;
+}
+
 bool ULMAHealthComponent::IsDead() const
 {
 	return Health <= 0.0f;
