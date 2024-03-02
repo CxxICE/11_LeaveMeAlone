@@ -99,6 +99,21 @@ void ULMAWeaponComponent::FirePermission()
 	}
 }
 
+void ULMAWeaponComponent::ReloadProhibition() 
+{
+	ReloadProhibited = true;
+}
+
+void ULMAWeaponComponent::ReloadPermission() 
+{
+	ReloadProhibited = false;
+}
+
+bool ULMAWeaponComponent::IsReloading()
+{
+	return AnimReloading;
+}
+
 bool ULMAWeaponComponent::GetCurrentAmmoWeapon(FAmmoWeapon& AmmoWeapon) const
 {	
 	if (IsValid(Weapon))
@@ -165,6 +180,6 @@ void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* Skeleta
 
 bool ULMAWeaponComponent::CanReload() const
 {
-	return !AnimReloading && !(Weapon->IsCurrentClipFull()) && Weapon->IsClipAvailable();
+	return !AnimReloading && !(Weapon->IsCurrentClipFull()) && Weapon->IsClipAvailable() && !ReloadProhibited;
 }
 

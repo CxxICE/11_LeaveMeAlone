@@ -23,6 +23,9 @@ public:
 	void ManualReload();
 	void FireProhibition();
 	void FirePermission();
+	void ReloadProhibition();
+	void ReloadPermission();
+	bool IsReloading();
 
 protected:
 	// Called when the game starts
@@ -49,6 +52,7 @@ private:
 	bool AnimReloading = false;
 	bool LongFireActivated = false;
 	bool FireProhibited = false;
+	bool ReloadProhibited = false;
 
 	void SpawnWeapon();
 

@@ -184,11 +184,17 @@ void ALMADefaultCharacter::RotationPlayerOnCursor()
 void ALMADefaultCharacter::SprintActivate() 
 {
 	SprintState = true;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-	
-	GetWorldTimerManager().SetTimer(StaminaTimerHandle, this, &ALMADefaultCharacter::CalculateStamina, StaminaTimerRate, true);	
-
-	WeaponComponent->FireProhibition();
+	if (WeaponComponent->IsReloading())
+	{			
+		GetWorldTimerManager().SetTimer(DelayedStartTimerHandle, this, &ALMADefaultCharacter::DelayedSprintStart, 0.05f, true);
+	}
+	else
+	{		
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetWorldTimerManager().SetTimer(StaminaTimerHandle, this, &ALMADefaultCharacter::CalculateStamina, StaminaTimerRate, true);
+		WeaponComponent->FireProhibition();
+		WeaponComponent->ReloadProhibition();
+	}
 }
 
 void ALMADefaultCharacter::SprintDeActivate() 
@@ -196,6 +202,23 @@ void ALMADefaultCharacter::SprintDeActivate()
 	SprintState = false;
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	WeaponComponent->FirePermission();
+	WeaponComponent->ReloadPermission();
+}
+
+void ALMADefaultCharacter::DelayedSprintStart()
+{
+	if (WeaponComponent->IsReloading())
+	{
+		return;
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(DelayedStartTimerHandle);
+		if (SprintState)
+		{
+			SprintActivate();
+		}		
+	}
 }
 
 void ALMADefaultCharacter::CalculateStamina()

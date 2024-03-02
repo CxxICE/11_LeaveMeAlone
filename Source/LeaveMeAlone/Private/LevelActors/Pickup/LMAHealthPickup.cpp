@@ -27,12 +27,16 @@ void ALMAHealthPickup::BeginPlay()
 
 void ALMAHealthPickup::NotifyActorBeginOverlap(AActor* OtherActor) 
 {
-	Super::NotifyActorBeginOverlap(OtherActor);
-	const auto Character = Cast<ALMADefaultCharacter>(OtherActor);
-	if (GivePickup(Character))
+	ALMADefaultCharacter *Player = Cast<ALMADefaultCharacter>(OtherActor);
+	if (IsValid(Player))
 	{
-		PickupWasTaken();
-	}
+		Super::NotifyActorBeginOverlap(OtherActor);
+		const auto Character = Cast<ALMADefaultCharacter>(OtherActor);
+		if (GivePickup(Character))
+		{
+			PickupWasTaken();
+		}
+	}	
 }
 
 // Called every frame
@@ -56,11 +60,11 @@ bool ALMAHealthPickup::GivePickup(ALMADefaultCharacter* Character)
 
 void ALMAHealthPickup::PickupWasTaken() 
 {
-	SphereComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	GetRootComponent()->SetVisibility(false, true);
-
-	FTimerHandle RespawnTimerHandle;
-	GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &ALMAHealthPickup::RespawnPickup, RespawnTime);
+	Destroy();
+	//SphereComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	//GetRootComponent()->SetVisibility(false, true);
+	//FTimerHandle RespawnTimerHandle;
+	//GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &ALMAHealthPickup::RespawnPickup, RespawnTime);
 }
 
 void ALMAHealthPickup::RespawnPickup() 

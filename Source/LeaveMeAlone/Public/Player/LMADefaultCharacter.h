@@ -111,9 +111,11 @@ private:
 
 	void SprintActivate();
 	void SprintDeActivate();
+	void DelayedSprintStart();
 
 	void CalculateStamina();	
 	bool StaminaIsFull();
 	bool StaminaIsEmpty();
 	FTimerHandle StaminaTimerHandle;
+	FTimerHandle DelayedStartTimerHandle;
 };
