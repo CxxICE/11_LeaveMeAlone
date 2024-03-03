@@ -1,7 +1,7 @@
 // LeaveMeAlone Game by Netologiya. All RightsReserved
 
 
-#include "Components/LMAWeaponComponent.h"
+#include "LMAWeaponComponent.h"
 #include "Animations/LMAReloadFinishedAnimNotify.h"
 #include "GameFramework/Character.h"
 #include "Weapons/LMABaseWeapon.h"
@@ -124,20 +124,12 @@ bool ULMAWeaponComponent::GetCurrentAmmoWeapon(FAmmoWeapon& AmmoWeapon) const
 	return false;	
 }
 
-// Called every frame
-void ULMAWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
 void ULMAWeaponComponent::SpawnWeapon() 
 {
 	Weapon = GetWorld()->SpawnActor<ALMABaseWeapon>(WeaponClass);
 	if (IsValid(Weapon))
 	{
-		const auto Character = Cast<ACharacter>(GetOwner());
+		const ACharacter *Character = Cast<ACharacter>(GetOwner());
 		if (IsValid(Character))
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
@@ -154,7 +146,7 @@ void ULMAWeaponComponent::InitAnimNotify()
 		const auto NotifiesEvents = ReloadMontage->Notifies;
 		for (auto NotifyEvent : NotifiesEvents)
 		{
-			auto ReloadFinish = Cast<ULMAReloadFinishedAnimNotify>(NotifyEvent.Notify);
+			ULMAReloadFinishedAnimNotify *ReloadFinish = Cast<ULMAReloadFinishedAnimNotify>(NotifyEvent.Notify);
 			if (ReloadFinish)
 			{
 				ReloadFinish->OnNotifyReloadFinished.AddUObject(this, &ULMAWeaponComponent::OnNotifyReloadFinished);
@@ -166,7 +158,7 @@ void ULMAWeaponComponent::InitAnimNotify()
 
 void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* SkeletalMesh) 
 {
-	const auto Character = Cast<ACharacter>(GetOwner());
+	const ACharacter *Character = Cast<ACharacter>(GetOwner());
 	if (Character->GetMesh() == SkeletalMesh)
 	{
 		AnimReloading = false;

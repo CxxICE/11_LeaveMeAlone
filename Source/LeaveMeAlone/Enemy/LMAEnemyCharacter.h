@@ -20,15 +20,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BehaviorTreeAsset;
-		
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components|Health")
 	ULMAHealthComponent* HealthComponent;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 };

@@ -1,14 +1,14 @@
 // LeaveMeAlone Game by Netologiya. All RightsReserved
 
 
-#include "Enemy/LMAAIController.h"
-#include "Enemy/LMAEnemyCharacter.h"
+#include "LMAAIController.h"
+#include "LMAEnemyCharacter.h"
 
 void ALMAAIController::OnPossess(APawn* InPawn) 
 {
 	Super::OnPossess(InPawn);
-	const auto AICharacter = Cast<ALMAEnemyCharacter>(InPawn);
-	if (AICharacter)
+	const ALMAEnemyCharacter *AICharacter = Cast<ALMAEnemyCharacter>(InPawn);
+	if (IsValid(AICharacter))
 	{
 		RunBehaviorTree(AICharacter->BehaviorTreeAsset);
 	}

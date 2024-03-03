@@ -18,20 +18,13 @@ ALMAHealthPickup::ALMAHealthPickup()
 	SetRootComponent(SphereComponent);
 }
 
-// Called when the game starts or when spawned
-void ALMAHealthPickup::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void ALMAHealthPickup::NotifyActorBeginOverlap(AActor* OtherActor) 
 {
 	ALMADefaultCharacter *Player = Cast<ALMADefaultCharacter>(OtherActor);
 	if (IsValid(Player))
 	{
 		Super::NotifyActorBeginOverlap(OtherActor);
-		const auto Character = Cast<ALMADefaultCharacter>(OtherActor);
+		ALMADefaultCharacter* const Character = Cast<ALMADefaultCharacter>(OtherActor);		
 		if (GivePickup(Character))
 		{
 			PickupWasTaken();
@@ -39,17 +32,9 @@ void ALMAHealthPickup::NotifyActorBeginOverlap(AActor* OtherActor)
 	}	
 }
 
-// Called every frame
-void ALMAHealthPickup::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	
-
-}
-
 bool ALMAHealthPickup::GivePickup(ALMADefaultCharacter* Character)
 {
-	const auto HealthComponent = Character->GetHealthComponent();
+	ULMAHealthComponent *HealthComponent = Character->GetHealthComponent();
 	if (!IsValid(HealthComponent))
 	{
 		return false;

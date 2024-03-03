@@ -1,7 +1,7 @@
 // LeaveMeAlone Game by Netologiya. All RightsReserved
 
 
-#include "Components/LMAHealthComponent.h"
+#include "LMAHealthComponent.h"
 
 // Sets default values for this component's properties
 ULMAHealthComponent::ULMAHealthComponent()

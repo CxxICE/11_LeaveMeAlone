@@ -79,7 +79,7 @@ void ALMABaseWeapon::BeginPlay()
 
 void ALMABaseWeapon::SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd)
 {
-	const auto TraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceEffect, TraceStart);
+	UNiagaraComponent* const TraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceEffect, TraceStart);
 	if (IsValid(TraceFX))
 	{
 		TraceFX->SetNiagaraVariableVec3(TraceName, TraceEnd);
@@ -88,7 +88,7 @@ void ALMABaseWeapon::SpawnTrace(const FVector& TraceStart, const FVector& TraceE
 
 void ALMABaseWeapon::SpawnFireHit(const FVector& HitVector, const FVector& ContrFireVector)
 {
-	const auto TraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect, HitVector);
+	UNiagaraComponent* const TraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect, HitVector);
 	if (IsValid(TraceFX))
 	{
 		TraceFX->SetNiagaraVariableVec3(FireHitDirection, ContrFireVector);
@@ -97,11 +97,11 @@ void ALMABaseWeapon::SpawnFireHit(const FVector& HitVector, const FVector& Contr
 
 void ALMABaseWeapon::MakeDamage(const FHitResult& HitResult) 
 {
-	const auto Zombie = HitResult.GetActor();
+	AActor *const Zombie = HitResult.GetActor();
 	if (!Zombie) return;
-	const auto Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	APawn *const Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (!Pawn) return;
-	const auto Controller = Pawn->GetController<APlayerController>();
+	APlayerController *const Controller = Pawn->GetController<APlayerController>();
 	if (!Controller) return;
 	
 	Zombie->TakeDamage(Damage, FDamageEvent(), Controller, this);
@@ -112,7 +112,7 @@ void ALMABaseWeapon::Shoot()
 
 	if (IsValid(FireMontage))
 	{
-		auto Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);		
+		ACharacter *Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);		
 		if (IsValid(Player))
 		{
 			Player->PlayAnimMontage(FireMontage);
@@ -136,7 +136,7 @@ void ALMABaseWeapon::Shoot()
 		TracerEnd = HitResult.ImpactPoint;
 		SpawnFireHit(TracerEnd, ContrFire);
 	}
-	const auto TraceFX1 = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffect, TraceStart);
+	UNiagaraComponent *const TraceFX1 = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffect, TraceStart);
 	SpawnTrace(TraceStart, TracerEnd);	
 	
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShootWave, TraceStart);
@@ -158,12 +158,5 @@ void ALMABaseWeapon::DecrementBullets()
 bool ALMABaseWeapon::IsCurrentClipEmpty() const
 {
 	return CurrentAmmoWeapon.Bullets == 0;
-}
-
-// Called every frame
-void ALMABaseWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 

@@ -93,10 +93,6 @@ protected:
 	void SpawnFireHit(const FVector& HitVector, const FVector& ContrFireVector);
 	void MakeDamage(const FHitResult& HitResult);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
 	FAmmoWeapon CurrentAmmoWeapon;
 	FTimerHandle FireTimerHandle;

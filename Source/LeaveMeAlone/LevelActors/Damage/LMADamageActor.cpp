@@ -1,7 +1,7 @@
 // LeaveMeAlone Game by Netologiya. All RightsReserved
 
 
-#include "LevelActors/Damage/LMADamageActor.h"
+#include "LMADamageActor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,13 +21,6 @@ ALMADamageActor::ALMADamageActor()
 	StaticMesh->SetRelativeScale3D(FVector(2.0f, 2.0f, 0.05f));
 	StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 
-}
-
-// Called when the game starts or when spawned
-void ALMADamageActor::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 // Called every frame
